@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arc Raiders Stream Overlay</title>
+    <title>Marathon Stream Overlay</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,11 +13,12 @@
             theme: {
                 extend: {
                     colors: {
-                        arc: {
-                            orange: '#ff5e00',
-                            dim: '#b34200',
-                            dark: '#0f172a',
-                            panel: 'rgba(15, 23, 42, 0.85)'
+                        mn: {
+                            yellow: '#ccff00',
+                            cyan: '#00f3ff',
+                            magenta: '#ff0055',
+                            dark: '#0a0a0c',
+                            panel: 'rgba(10, 10, 12, 0.85)'
                         }
                     },
                     fontFamily: {
@@ -41,11 +42,58 @@
         }
         #scaling-container { width: 1080px; height: 1920px; position: absolute; top: 0; left: 0; transform-origin: top left; }
         
+        /* --- BACKGROUND ATMOSPHERE --- */
+        .nebula-blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.15;
+            z-index: 0;
+            animation: drift 20s ease-in-out infinite alternate;
+        }
+        @keyframes drift {
+            from { transform: translate(-10%, -10%) scale(1); }
+            to { transform: translate(10%, 10%) scale(1.2); }
+        }
+
+        /* --- MULTI-LAYER GRID --- */
+        .tech-grid-main { 
+            background-image: 
+                linear-gradient(rgba(0, 243, 255, 0.15) 1px, transparent 1px), 
+                linear-gradient(90deg, rgba(0, 243, 255, 0.15) 1px, transparent 1px); 
+            background-size: 60px 60px; 
+            animation: grid-scroll 25s linear infinite; 
+        }
+        .tech-grid-sub { 
+            background-image: 
+                linear-gradient(rgba(204, 255, 0, 0.08) 1px, transparent 1px), 
+                linear-gradient(90deg, rgba(204, 255, 0, 0.08) 1px, transparent 1px); 
+            background-size: 150px 150px; 
+            animation: grid-scroll 45s linear infinite reverse; 
+        }
+        @keyframes grid-scroll { from { background-position: 0 0; } to { background-position: 0 600px; } }
+
+        /* --- DATA STREAMS --- */
+        .data-stream {
+            position: absolute;
+            width: 1px;
+            height: 100px;
+            background: linear-gradient(to bottom, transparent, #00f3ff, transparent);
+            animation: data-fall 8s linear infinite;
+            opacity: 0.3;
+        }
+        @keyframes data-fall {
+            0% { top: -100px; opacity: 0; }
+            10% { opacity: 0.5; }
+            90% { opacity: 0.5; }
+            100% { top: 100%; opacity: 0; }
+        }
+
         /* --- RETRO CRT EFFECT --- */
         .crt-overlay {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background: linear-gradient(rgba(10, 10, 12, 0) 50%, rgba(0, 0, 0, 0.3) 50%), linear-gradient(90deg, rgba(204, 255, 0, 0.02), rgba(0, 243, 255, 0.02), rgba(255, 0, 85, 0.02));
             background-size: 100% 4px, 6px 100%;
             pointer-events: none;
             z-index: 50;
@@ -53,31 +101,32 @@
         }
         @keyframes flicker { 0% { opacity: 0.95; } 100% { opacity: 1; } }
 
-        /* --- GRID ANIMATION --- */
-        .tech-grid { 
-            background-image: 
-                linear-gradient(rgba(255, 94, 0, 0.15) 1px, transparent 1px), 
-                linear-gradient(90deg, rgba(255, 94, 0, 0.15) 1px, transparent 1px); 
-            background-size: 50px 50px; 
-            animation: grid-scroll 20s linear infinite; 
-        }
-        @keyframes grid-scroll { from { background-position: 0 0; } to { background-position: 0 500px; } }
-
         /* --- BORDERS & GLOWS --- */
         .neon-border {
-            box-shadow: 0 0 10px rgba(255, 94, 0, 0.3), inset 0 0 20px rgba(255, 94, 0, 0.1);
-            border: 1px solid rgba(255, 94, 0, 0.5);
+            box-shadow: 0 0 10px rgba(204, 255, 0, 0.3), inset 0 0 20px rgba(204, 255, 0, 0.1);
+            border: 1px solid rgba(204, 255, 0, 0.5);
             animation: border-pulse 4s infinite ease-in-out;
         }
         @keyframes border-pulse {
-            0%, 100% { box-shadow: 0 0 10px rgba(255, 94, 0, 0.3), inset 0 0 20px rgba(255, 94, 0, 0.1); border-color: rgba(255, 94, 0, 0.5); }
-            50% { box-shadow: 0 0 20px rgba(255, 94, 0, 0.5), inset 0 0 30px rgba(255, 94, 0, 0.2); border-color: rgba(255, 94, 0, 0.8); }
+            0%, 100% { box-shadow: 0 0 10px rgba(204, 255, 0, 0.3), inset 0 0 20px rgba(204, 255, 0, 0.1); border-color: rgba(204, 255, 0, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(204, 255, 0, 0.5), inset 0 0 30px rgba(204, 255, 0, 0.2); border-color: rgba(204, 255, 0, 0.8); }
         }
         
         .logo-glow { animation: pulse-logo 4s infinite ease-in-out; }
         @keyframes pulse-logo { 
-            0%, 100% { filter: drop-shadow(0 0 5px #ff5e00); transform: scale(1); } 
-            50% { filter: drop-shadow(0 0 20px #ff5e00); transform: scale(1.02); } 
+            0%, 100% { filter: drop-shadow(0 0 8px #ccff00); transform: scale(1); } 
+            50% { filter: drop-shadow(0 0 25px #ccff00); transform: scale(1.02); } 
+        }
+
+        /* --- LOGO "ALIVE" EFFECT --- */
+        .logo-alive {
+            animation: living-logo 5s ease-in-out infinite alternate;
+            transform-origin: center;
+        }
+        @keyframes living-logo {
+            0% { transform: scale(0.95) rotate(-2deg); filter: brightness(1) drop-shadow(0 0 10px rgba(204,255,0,0.4)); }
+            50% { transform: scale(1.05) rotate(1deg); filter: brightness(1.2) drop-shadow(0 0 25px rgba(0,243,255,0.8)); }
+            100% { transform: scale(0.98) rotate(2deg); filter: brightness(1.1) drop-shadow(0 0 15px rgba(255,0,85,0.6)); }
         }
 
         /* --- TICKER --- */
@@ -85,53 +134,38 @@
         .ticker-text { display: inline-block; animation: scroll-text 30s linear infinite; padding-left: 100%; }
         @keyframes scroll-text { from { transform: translateX(100%); } to { transform: translateX(-100%); } }
 
-        /* --- CAROUSEL (Infinite Loop Fixed) --- */
-        /* Calculation: 5 cards. Width (16rem) + Gap (1.5rem) = 17.5rem per unit. 5 units = 87.5rem */
-        .loadout-slider { animation: slide-cards 20s linear infinite; }
-        @keyframes slide-cards { from { transform: translateX(0); } to { transform: translateX(-87.5rem); } }
-
-        /* --- CARD SCANNERS --- */
-        .card-scanner::after {
-            content: '';
-            position: absolute;
-            top: 0; left: -100%; width: 50%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 94, 0, 0.2), transparent);
-            transform: skewX(-20deg);
-            animation: scan-pass 6s infinite ease-in-out;
-            pointer-events: none;
+        /* --- RADAR ANIMATION --- */
+        .radar-sweep {
+            position: absolute; width: 100%; height: 100%; top: 0; left: 0;
+            background: conic-gradient(from 0deg, transparent 0deg, rgba(0, 243, 255, 0.3) 90deg, transparent 90deg);
+            border-radius: 50%;
+            animation: rotate-sweep 4s linear infinite;
         }
-        @keyframes scan-pass {
-            0%, 50% { left: -100%; }
-            100% { left: 200%; }
-        }
-        /* Stagger scans */
-        .card-scanner:nth-child(odd)::after { animation-delay: 0s; }
-        .card-scanner:nth-child(even)::after { animation-delay: 3s; }
+        @keyframes rotate-sweep { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-        /* --- PARTICLES --- */
+        /* --- DIGITAL PARTICLES --- */
         .ember-container { position: absolute; bottom: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; overflow: hidden; }
         .ember {
             position: absolute;
             bottom: -10px;
-            width: 2px; height: 2px;
-            background: #ff5e00;
-            box-shadow: 0 0 4px #ff5e00;
-            border-radius: 50%;
+            width: 4px; height: 4px;
+            background: #ccff00;
+            box-shadow: 0 0 6px #ccff00;
             animation: float-up linear infinite;
         }
         @keyframes float-up {
-            0% { transform: translateY(0) translateX(0); opacity: 0; }
+            0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0; }
             10% { opacity: 1; }
-            100% { transform: translateY(-800px) translateX(var(--drift)); opacity: 0; }
+            100% { transform: translateY(-800px) translateX(var(--drift)) rotate(360deg); opacity: 0; }
         }
 
         /* --- LASER ANIMATION --- */
         .laser-container { position: absolute; top: 0; left: 0; width: 100%; height: 60%; pointer-events: none; overflow: hidden; z-index: 5; }
         .laser {
             position: absolute;
-            width: 80px; height: 2px;
-            background: #ff5e00;
-            box-shadow: 0 0 10px #ff5e00, 0 0 20px #ffcc00;
+            width: 100px; height: 2px;
+            background: #00f3ff;
+            box-shadow: 0 0 10px #00f3ff, 0 0 20px #ffffff;
             opacity: 0;
             transform-origin: left;
         }
@@ -144,52 +178,39 @@
         .laser:nth-child(3) { top: 55%; animation: laser-shot 2.5s infinite linear 0.5s; }
         .laser:nth-child(4) { top: 70%; animation: laser-shot 4s infinite linear 2s; }
 
-        /* --- GLITCH/STATIC FOOTER --- */
         .static-footer { position: relative; overflow: hidden; }
         .static-footer::after {
             content: "";
             position: absolute;
             top: -50%; left: -50%; width: 200%; height: 200%;
-            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSIjZmY1ZTAwIiBmaWxsLW9wYWNpdHk9IjAuMDUiLz4KPC9zdmc+');
+            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSIjMDBmM2ZmIiBmaWxsLW9wYWNpdHk9IjAuMDUiLz4KPC9zdmc+');
             animation: static-noise 0.5s steps(5) infinite;
-            opacity: 0.3;
+            opacity: 0.4;
             pointer-events: none;
         }
         @keyframes static-noise { 0% { transform: translate(0,0); } 100% { transform: translate(20px, 20px); } }
 
-        /* --- POPUP ANIMATIONS --- */
         #event-popup {
             transition: transform 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28), opacity 0.4s ease-out;
             transform: translateX(-120%) skewX(-10deg);
             opacity: 0;
         }
         #event-popup.show { transform: translateX(0) skewX(-10deg); opacity: 1; }
-        
-        .title-twitch { animation: text-twitch 5s infinite; }
-        @keyframes text-twitch {
-            0%, 95%, 100% { transform: translate(0); }
-            96% { transform: translate(-2px, 1px); }
-            97% { transform: translate(1px, -1px); }
-            98% { transform: translate(0, 2px); }
-            99% { transform: translate(-1px, -1px); }
-        }
 
-        /* --- USERNAME GLITCH ANIMATION --- */
         .glitch-name { position: relative; display: inline-block; }
         .glitch-name::before, .glitch-name::after {
             content: attr(data-text);
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: #0f172a;
+            background: #0a0a0c;
         }
         .glitch-name::before {
-            left: 2px; text-shadow: -2px 0 #00ffff; clip-path: inset(0 0 0 0);
+            left: 2px; text-shadow: -2px 0 #00f3ff; clip-path: inset(0 0 0 0);
             animation: glitch-anim-1 4s infinite linear alternate-reverse; z-index: -1;
         }
         .glitch-name::after {
-            left: -2px; text-shadow: -2px 0 #ff00c1; clip-path: inset(0 0 0 0);
+            left: -2px; text-shadow: -2px 0 #ff0055; clip-path: inset(0 0 0 0);
             animation: glitch-anim-2 4s infinite linear alternate-reverse; z-index: -2;
         }
-
         @keyframes glitch-anim-1 {
             0% { clip-path: inset(20% 0 80% 0); transform: translate(-2px, 1px); }
             20% { clip-path: inset(60% 0 10% 0); transform: translate(2px, -1px); }
@@ -215,12 +236,38 @@
 <body class="text-gray-300">
     
     <div id="scaling-container">
-        <!-- BACKGROUND LAYER -->
-        <div class="relative flex flex-col h-full w-full p-6 bg-cover bg-center justify-between bg-slate-900">
-            <!-- Retro Grid Background -->
-            <div class="absolute inset-0 tech-grid opacity-30 z-0"></div>
-            
-            <!-- Floating Embers/Particles -->
+        <!-- BACKGROUND ATMOSPHERE LAYERS -->
+        <div class="absolute inset-0 bg-slate-950 overflow-hidden">
+            <!-- Drift Blobs -->
+            <div class="nebula-blob w-[800px] h-[800px] bg-mn-cyan top-[-200px] left-[-200px]"></div>
+            <div class="nebula-blob w-[600px] h-[600px] bg-mn-magenta bottom-[100px] right-[-100px]" style="animation-delay: -5s;"></div>
+            <div class="nebula-blob w-[500px] h-[500px] bg-mn-yellow top-[40%] left-[30%] opacity-[0.1]" style="animation-duration: 30s;"></div>
+
+            <!-- Parallax Grids -->
+            <div class="absolute inset-0 tech-grid-sub opacity-20 z-0"></div>
+            <div class="absolute inset-0 tech-grid-main opacity-30 z-0"></div>
+
+            <!-- Peripheral Data HUD -->
+            <div class="absolute top-10 left-10 font-mono text-[10px] text-mn-cyan opacity-40 z-0">
+                <p>COORD_X: 2.112.55</p>
+                <p>COORD_Y: 7.901.22</p>
+                <p>UE-SYNC: ACTIVE</p>
+            </div>
+            <div class="absolute bottom-10 right-10 font-mono text-[10px] text-mn-yellow opacity-40 text-right z-0">
+                <p>SECTOR: 7G_STABLE</p>
+                <p>SIGNAL: 1.092ms</p>
+                <p>BUFFER: CLEAR</p>
+            </div>
+
+            <!-- Data Streams -->
+            <div class="data-stream" style="left: 20%; animation-delay: 1s;"></div>
+            <div class="data-stream" style="left: 45%; animation-delay: 4s;"></div>
+            <div class="data-stream" style="left: 75%; animation-delay: 2s;"></div>
+            <div class="data-stream" style="left: 90%; animation-delay: 6s;"></div>
+        </div>
+
+        <div class="relative flex flex-col h-full w-full p-6 justify-between z-10">
+            <!-- Embers/Cyber Dust -->
             <div class="ember-container">
                 <div class="ember" style="left: 10%; animation-duration: 8s; --drift: 50px;"></div>
                 <div class="ember" style="left: 30%; animation-duration: 12s; --drift: -30px;"></div>
@@ -229,166 +276,93 @@
                 <div class="ember" style="left: 90%; animation-duration: 9s; --drift: 40px;"></div>
             </div>
             
-            <!-- CRT Scanline Overlay -->
             <div class="crt-overlay"></div>
 
-            <!-- LASER SHOTS -->
             <div class="laser-container">
                 <div class="laser"></div><div class="laser"></div><div class="laser"></div><div class="laser"></div>
             </div>
 
             <!-- TOP SECTION -->
             <header class="w-full flex-shrink-0 z-10 mt-4">
-                <!-- Ticker -->
-                <div class="bg-arc-dark/90 backdrop-blur-md clip-corner neon-border py-2 px-6 mb-8 w-full max-w-4xl mx-auto">
+                <div class="bg-mn-dark/90 backdrop-blur-md clip-corner neon-border py-2 px-6 mb-8 w-full max-w-4xl mx-auto">
                     <div class="ticker-wrap">
-                        <div class="ticker-text font-mono text-arc-orange font-bold text-2xl tracking-widest">
-                            <span>/// SYSTEM ONLINE ///</span><span class="text-white mx-8">::</span>
-                            <span>RESIST THE MACHINES</span><span class="text-white mx-8">::</span>
-                            <span>EXTRACTION IMMINENT</span><span class="text-white mx-8">::</span>
-                            <span>JOIN THE RAIDERS</span><span class="text-white mx-8">::</span>
+                        <div class="ticker-text font-mono text-mn-yellow font-bold text-2xl tracking-widest">
+                            <span>/// UESC TERMINAL ONLINE ///</span><span class="text-white mx-8">::</span>
+                            <span>SOMEWHERE IN THE HEAVENS...</span><span class="text-white mx-8">::</span>
+                            <span>BECOME A RUNNER</span><span class="text-white mx-8">::</span>
+                            <span>SECURE THE ARTIFACTS</span><span class="text-white mx-8">::</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Logo Area -->
+                <!-- Alive Logo Area -->
                 <div class="flex flex-col items-center justify-center space-y-6">
                     <div class="relative group">
-                        <!-- Placeholder for Logo - Using a generic badge for now -->
-                        <div class="w-72 h-72 border-4 border-arc-orange rounded-full flex items-center justify-center bg-slate-900/80 logo-glow relative overflow-hidden">
-                            <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-50"></div>
-                            <h1 class="font-display font-black text-6xl text-white italic tracking-tighter z-10">ARC<br><span class="text-arc-orange">RAIDER</span></h1>
+                        <div class="w-72 h-72 border-4 border-mn-yellow rounded-full flex items-center justify-center bg-transparent logo-glow relative overflow-hidden">
+                            <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-30 z-10 pointer-events-none"></div>
+                            <img src="https://i.postimg.cc/Dwk3TPvW/Chat-GPT-Image-Sep-12-2025-11-00-09-PM.png" alt="Blitz Logo" class="w-56 h-56 object-contain z-0 logo-alive">
                         </div>
                     </div>
                     
-                    <div class="w-full max-w-lg bg-arc-dim/20 clip-corner p-1 border border-arc-orange/50">
-                        <div class="bg-arc-dark/90 h-10 flex items-center justify-center text-white text-xl font-mono tracking-[0.2em] clip-corner">
-                            SIGNAL STRENGTH: 100%
+                    <div class="w-full max-w-lg bg-mn-yellow/20 clip-corner p-1 border border-mn-yellow/50">
+                        <div class="bg-mn-dark/95 h-10 flex items-center justify-center text-white text-xl font-mono tracking-[0.2em] clip-corner">
+                            SYNC RATE: <span class="text-mn-cyan ml-2 font-bold">100%</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Gear Carousel -->
-                <div class="w-full max-w-3xl mx-auto mt-8 relative">
-                    <!-- Section Title -->
-                    <div class="text-center mb-2">
-                        <h2 class="title-twitch font-mono text-arc-orange text-lg tracking-[0.3em] uppercase bg-black/60 inline-block px-4 py-1 border-x border-arc-orange/30">
-                            /// Hunted Blueprints ///
-                        </h2>
-                    </div>
-
-                    <div class="overflow-hidden relative">
-                        <div class="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-slate-900 to-transparent z-10"></div>
-                        <div class="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-slate-900 to-transparent z-10"></div>
-                        
-                        <div class="loadout-slider flex gap-6 py-4">
-                            <!-- --- SET 1 --- -->
-                            <!-- Card 1: Bobcat -->
-                            <div class="card-scanner flex-shrink-0 w-64 bg-arc-dark/90 border border-slate-600 p-3 clip-corner relative group">
-                                <div class="absolute top-0 right-0 p-1 text-[10px] bg-arc-orange text-black font-bold">WEAPON</div>
-                                <p class="font-mono text-slate-400 text-sm tracking-widest mb-2">ASSAULT</p>
-                                <div class="h-32 bg-slate-800/50 mb-2 flex items-center justify-center border border-slate-700 overflow-hidden">
-                                    <img src="https://i.postimg.cc/XBSxF8vP/Bobcat-Level1.png" alt="Bobcat" class="w-full h-full object-contain p-2 group-hover:scale-110 transition-transform duration-500">
+                <!-- TACTICAL DASHBOARD -->
+                <div class="w-full max-w-5xl mx-auto mt-12 grid grid-cols-3 gap-6 relative">
+                    
+                    <!-- Module 1: Runner Bio -->
+                    <div class="bg-mn-dark/95 border-l-4 border-mn-yellow p-4 clip-corner neon-border backdrop-blur-sm">
+                        <h3 class="font-mono text-mn-yellow text-xs tracking-widest mb-3 uppercase border-b border-mn-yellow/30 pb-1">Runner_Profile</h3>
+                        <div class="space-y-2">
+                            <div class="flex justify-between font-mono text-sm"><span class="text-gray-500">ID:</span> <span class="text-white font-bold">BLITZ_88</span></div>
+                            <div class="flex justify-between font-mono text-sm"><span class="text-gray-500">RANK:</span> <span class="text-mn-cyan">ELITE RUNNER</span></div>
+                            <div class="flex justify-between font-mono text-sm"><span class="text-gray-500">BIO-SYNC:</span> <span class="text-green-400">STABLE</span></div>
+                            <div class="mt-4 pt-2 border-t border-gray-800">
+                                <div class="w-full bg-gray-900 h-2 rounded-full overflow-hidden">
+                                    <div class="bg-mn-yellow h-full w-[85%] animate-pulse"></div>
                                 </div>
-                                <h3 class="font-display text-center text-xl text-arc-orange uppercase">Bobcat</h3>
-                            </div>
-                            <!-- Card 2: Looting Mk 3 -->
-                            <div class="card-scanner flex-shrink-0 w-64 bg-arc-dark/90 border border-slate-600 p-3 clip-corner relative group">
-                                <div class="absolute top-0 right-0 p-1 text-[10px] bg-teal-400 text-black font-bold">GADGET</div>
-                                <p class="font-mono text-slate-400 text-sm tracking-widest mb-2">UTILITY</p>
-                                <div class="h-32 bg-slate-800/50 mb-2 flex items-center justify-center border border-slate-700 overflow-hidden">
-                                    <img src="https://i.postimg.cc/m1fVMwrq/Looting-Mk-3-(Survivor).png" alt="Looting Mk 3" class="w-full h-full object-contain p-2 group-hover:scale-110 transition-transform duration-500">
-                                </div>
-                                <h3 class="font-display text-center text-xl text-teal-400 uppercase">Looting Mk 3</h3>
-                            </div>
-                            <!-- Card 3: Tempest -->
-                            <div class="card-scanner flex-shrink-0 w-64 bg-arc-dark/90 border border-slate-600 p-3 clip-corner relative group">
-                                <div class="absolute top-0 right-0 p-1 text-[10px] bg-arc-orange text-black font-bold">WEAPON</div>
-                                <p class="font-mono text-slate-400 text-sm tracking-widest mb-2">SMG</p>
-                                <div class="h-32 bg-slate-800/50 mb-2 flex items-center justify-center border border-slate-700 overflow-hidden">
-                                    <img src="https://i.postimg.cc/JHVKJqhd/Tempest-Level1.png" alt="Tempest" class="w-full h-full object-contain p-2 group-hover:scale-110 transition-transform duration-500">
-                                </div>
-                                <h3 class="font-display text-center text-xl text-arc-orange uppercase">Tempest</h3>
-                            </div>
-                            <!-- Card 4: Vita Spray -->
-                            <div class="card-scanner flex-shrink-0 w-64 bg-arc-dark/90 border border-slate-600 p-3 clip-corner relative group">
-                                <div class="absolute top-0 right-0 p-1 text-[10px] bg-teal-400 text-black font-bold">MED</div>
-                                <p class="font-mono text-slate-400 text-sm tracking-widest mb-2">CONSUMABLE</p>
-                                <div class="h-32 bg-slate-800/50 mb-2 flex items-center justify-center border border-slate-700 overflow-hidden">
-                                    <img src="https://i.postimg.cc/dZPndB0x/Vita-Spray.png" alt="Vita Spray" class="w-full h-full object-contain p-2 group-hover:scale-110 transition-transform duration-500">
-                                </div>
-                                <h3 class="font-display text-center text-xl text-teal-400 uppercase">Vita Spray</h3>
-                            </div>
-                            <!-- Card 5: Vulcano -->
-                            <div class="card-scanner flex-shrink-0 w-64 bg-arc-dark/90 border border-slate-600 p-3 clip-corner relative group">
-                                <div class="absolute top-0 right-0 p-1 text-[10px] bg-arc-orange text-black font-bold">WEAPON</div>
-                                <p class="font-mono text-slate-400 text-sm tracking-widest mb-2">SPECIAL</p>
-                                <div class="h-32 bg-slate-800/50 mb-2 flex items-center justify-center border border-slate-700 overflow-hidden">
-                                    <img src="https://i.postimg.cc/N2qbT40d/Vulcano-Level1.png" alt="Vulcano" class="w-full h-full object-contain p-2 group-hover:scale-110 transition-transform duration-500">
-                                </div>
-                                <h3 class="font-display text-center text-xl text-arc-orange uppercase">Vulcano</h3>
-                            </div>
-
-                            <!-- --- SET 2 (EXACT DUPLICATES FOR INFINITE LOOP) --- -->
-                             <!-- Card 1: Bobcat -->
-                             <div class="card-scanner flex-shrink-0 w-64 bg-arc-dark/90 border border-slate-600 p-3 clip-corner relative group">
-                                <div class="absolute top-0 right-0 p-1 text-[10px] bg-arc-orange text-black font-bold">WEAPON</div>
-                                <p class="font-mono text-slate-400 text-sm tracking-widest mb-2">ASSAULT</p>
-                                <div class="h-32 bg-slate-800/50 mb-2 flex items-center justify-center border border-slate-700 overflow-hidden">
-                                    <img src="https://i.postimg.cc/XBSxF8vP/Bobcat-Level1.png" alt="Bobcat" class="w-full h-full object-contain p-2 group-hover:scale-110 transition-transform duration-500">
-                                </div>
-                                <h3 class="font-display text-center text-xl text-arc-orange uppercase">Bobcat</h3>
-                            </div>
-                            <!-- Card 2: Looting Mk 3 -->
-                            <div class="card-scanner flex-shrink-0 w-64 bg-arc-dark/90 border border-slate-600 p-3 clip-corner relative group">
-                                <div class="absolute top-0 right-0 p-1 text-[10px] bg-teal-400 text-black font-bold">GADGET</div>
-                                <p class="font-mono text-slate-400 text-sm tracking-widest mb-2">UTILITY</p>
-                                <div class="h-32 bg-slate-800/50 mb-2 flex items-center justify-center border border-slate-700 overflow-hidden">
-                                    <img src="https://i.postimg.cc/m1fVMwrq/Looting-Mk-3-(Survivor).png" alt="Looting Mk 3" class="w-full h-full object-contain p-2 group-hover:scale-110 transition-transform duration-500">
-                                </div>
-                                <h3 class="font-display text-center text-xl text-teal-400 uppercase">Looting Mk 3</h3>
-                            </div>
-                            <!-- Card 3: Tempest -->
-                            <div class="card-scanner flex-shrink-0 w-64 bg-arc-dark/90 border border-slate-600 p-3 clip-corner relative group">
-                                <div class="absolute top-0 right-0 p-1 text-[10px] bg-arc-orange text-black font-bold">WEAPON</div>
-                                <p class="font-mono text-slate-400 text-sm tracking-widest mb-2">SMG</p>
-                                <div class="h-32 bg-slate-800/50 mb-2 flex items-center justify-center border border-slate-700 overflow-hidden">
-                                    <img src="https://i.postimg.cc/JHVKJqhd/Tempest-Level1.png" alt="Tempest" class="w-full h-full object-contain p-2 group-hover:scale-110 transition-transform duration-500">
-                                </div>
-                                <h3 class="font-display text-center text-xl text-arc-orange uppercase">Tempest</h3>
-                            </div>
-                            <!-- Card 4: Vita Spray -->
-                            <div class="card-scanner flex-shrink-0 w-64 bg-arc-dark/90 border border-slate-600 p-3 clip-corner relative group">
-                                <div class="absolute top-0 right-0 p-1 text-[10px] bg-teal-400 text-black font-bold">MED</div>
-                                <p class="font-mono text-slate-400 text-sm tracking-widest mb-2">CONSUMABLE</p>
-                                <div class="h-32 bg-slate-800/50 mb-2 flex items-center justify-center border border-slate-700 overflow-hidden">
-                                    <img src="https://i.postimg.cc/dZPndB0x/Vita-Spray.png" alt="Vita Spray" class="w-full h-full object-contain p-2 group-hover:scale-110 transition-transform duration-500">
-                                </div>
-                                <h3 class="font-display text-center text-xl text-teal-400 uppercase">Vita Spray</h3>
-                            </div>
-                            <!-- Card 5: Vulcano -->
-                            <div class="card-scanner flex-shrink-0 w-64 bg-arc-dark/90 border border-slate-600 p-3 clip-corner relative group">
-                                <div class="absolute top-0 right-0 p-1 text-[10px] bg-arc-orange text-black font-bold">WEAPON</div>
-                                <p class="font-mono text-slate-400 text-sm tracking-widest mb-2">SPECIAL</p>
-                                <div class="h-32 bg-slate-800/50 mb-2 flex items-center justify-center border border-slate-700 overflow-hidden">
-                                    <img src="https://i.postimg.cc/N2qbT40d/Vulcano-Level1.png" alt="Vulcano" class="w-full h-full object-contain p-2 group-hover:scale-110 transition-transform duration-500">
-                                </div>
-                                <h3 class="font-display text-center text-xl text-arc-orange uppercase">Vulcano</h3>
+                                <p class="text-[10px] text-mn-yellow mt-1 font-mono tracking-tighter">XP_TO_NEXT_LEVEL: 1,240</p>
                             </div>
                         </div>
+                    </div>
+
+                    <!-- Module 2: Sector Scanner (Animated Radar) -->
+                    <div class="bg-mn-dark/95 border border-mn-cyan/30 p-4 clip-corner flex flex-col items-center justify-center relative overflow-hidden h-44 backdrop-blur-sm">
+                        <div class="absolute inset-0 opacity-20 bg-[radial-gradient(circle,#00f3ff_1px,transparent_1px)] bg-[size:15px_15px]"></div>
+                        <div class="w-28 h-28 rounded-full border border-mn-cyan/50 relative">
+                            <div class="radar-sweep"></div>
+                            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1 h-1 bg-mn-cyan rounded-full shadow-[0_0_5px_#00f3ff]"></div>
+                            <div class="absolute top-4 left-6 w-1 h-1 bg-mn-yellow rounded-full animate-ping"></div>
+                            <div class="absolute bottom-8 right-10 w-1 h-1 bg-mn-magenta rounded-full animate-ping" style="animation-delay: 1s;"></div>
+                        </div>
+                        <p class="font-mono text-[10px] text-mn-cyan mt-3 tracking-[0.3em] uppercase animate-pulse">Scanning_Sector_7G...</p>
+                    </div>
+
+                    <!-- Module 3: Active Directives -->
+                    <div class="bg-mn-dark/95 border-r-4 border-mn-magenta p-4 clip-corner neon-border backdrop-blur-sm">
+                        <h3 class="font-mono text-mn-magenta text-xs tracking-widest mb-3 uppercase border-b border-mn-magenta/30 pb-1">Current_Directives</h3>
+                        <ul class="space-y-2 font-mono text-xs">
+                            <li class="flex gap-2 text-white"><span class="text-mn-magenta font-bold">[!]</span> SECURE_PRIME_ARTIFACT</li>
+                            <li class="flex gap-2 text-gray-400"><span class="text-mn-cyan">[>]</span> INFILTRATE_UESC_VAULT</li>
+                            <li class="flex gap-2 text-gray-400"><span class="text-mn-cyan">[>]</span> SURVIVE_EXTRACTION_SHIP</li>
+                            <li class="flex gap-2 text-green-500/50 line-through"><span class="text-green-500">[✓]</span> BREACH_GRID_NETWORK</li>
+                        </ul>
                     </div>
                 </div>
             </header>
             
-             <!-- EVENT POP-UP (Styled as a Terminal Alert) -->
-             <div id="event-popup" class="w-full max-w-md bg-arc-dark/95 border border-arc-orange p-1 z-20 absolute bottom-[600px] left-8 shadow-[0_0_20px_rgba(255,94,0,0.4)]">
-                <div class="border border-arc-orange/50 p-4 bg-[url('https://www.transparenttextures.com/patterns/diagmonds-light.png')]">
-                    <div class="flex items-center gap-3 mb-2 border-b border-arc-orange/30 pb-2">
-                        <div class="w-3 h-3 bg-arc-orange animate-pulse"></div>
-                        <p class="font-mono text-arc-orange text-sm tracking-widest">NEW_SIGNATURE_DETECTED</p>
+             <div id="event-popup" class="w-full max-w-md bg-mn-dark/95 border border-mn-cyan p-1 z-20 absolute bottom-[600px] left-8 shadow-[0_0_20px_rgba(0,243,255,0.4)]">
+                <div class="border border-mn-cyan/50 p-4 bg-[url('https://www.transparenttextures.com/patterns/diagmonds-light.png')]">
+                    <div class="flex items-center gap-3 mb-2 border-b border-mn-cyan/30 pb-2">
+                        <div class="w-3 h-3 bg-mn-cyan animate-pulse"></div>
+                        <p class="font-mono text-mn-cyan text-sm tracking-widest">NETWORK_BREACH_DETECTED</p>
                     </div>
                     <p class="text-3xl font-display text-white mt-1">
-                        <span class="text-teal-400 font-bold">&gt;&gt;</span> 
+                        <span class="text-mn-yellow font-bold">&gt;&gt;</span> 
                         <span id="event-text">USER_NAME</span>
                     </p>
                 </div>
@@ -396,19 +370,15 @@
 
             <!-- BOTTOM SECTION -->
             <footer class="w-full flex-shrink-0 z-10 flex flex-col gap-6 static-footer pb-8">
-                
-                <!-- Main Title Box -->
-                <div class="w-full bg-arc-dark/95 backdrop-blur-md p-6 clip-corner border-l-8 border-arc-orange neon-border">
-                    <div class="flex flex-row items-end justify-center gap-6">
-                        <!-- BIG BLITZ -->
+                <div class="w-full bg-mn-dark/95 backdrop-blur-md p-6 clip-corner border-l-8 border-mn-yellow neon-border">
+                    <div class="flex flex-row items-center justify-center gap-8">
                         <h1 class="glitch-name font-display text-white font-black tracking-widest uppercase text-9xl italic leading-none" data-text="BLITZ">
                             BLITZ
                         </h1>
-                        
-                        <!-- SMALL RAIDER -->
-                        <div class="mb-4">
-                             <p class="font-mono font-bold tracking-[0.5em] text-3xl text-arc-orange bg-black/40 px-6 py-2 border border-arc-orange/30 clip-corner">
-                                 RAIDER
+                        <div class="flex flex-col items-center justify-center">
+                             <img src="https://i.postimg.cc/FzKwpdTh/newmarathon.png" alt="Marathon Logo" class="h-24 object-contain mb-3 drop-shadow-[0_0_10px_rgba(255,255,255,0.4)]">
+                             <p class="font-mono font-bold tracking-[0.5em] text-2xl text-mn-dark bg-mn-yellow px-6 py-1 clip-corner shadow-[0_0_15px_rgba(204,255,0,0.5)]">
+                                 RUNNER
                              </p>
                         </div>
                     </div>
@@ -417,12 +387,10 @@
         </div>
     </div>
     
-    <!-- Firebase Libraries -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <script>
-        // --- YOUR UNIQUE FIREBASE CONFIG (Unchanged from original) ---
         const firebaseConfig = {
             apiKey: "AIzaSyD-ea59ew-Og9xeRiUGSQpYmgZWZNknib4",
             authDomain: "blitz-stream-stats.firebaseapp.com",
@@ -433,11 +401,9 @@
             appId: "1:428511033677:web:b82cd87b8e4df809225f04"
         };
 
-        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        // --- SCALING SCRIPT ---
         function scaleOverlay() {
             const container = document.getElementById('scaling-container');
             const targetWidth = 1080;
@@ -446,20 +412,14 @@
             container.style.transform = `scale(${scale})`;
         }
         
-        // --- EVENT POP-UP LISTENER ---
         let eventTimeout;
         database.ref('stream_stats/latest_event').on('value', (snapshot) => {
             const eventText = snapshot.val();
             if(eventText) {
                 const popup = document.getElementById('event-popup');
                 document.getElementById('event-text').textContent = eventText;
-
                 clearTimeout(eventTimeout);
-                
                 popup.classList.add('show');
-                
-                // Play sound effect here if desired
-                
                 eventTimeout = setTimeout(() => {
                     popup.classList.remove('show');
                 }, 5000); 
