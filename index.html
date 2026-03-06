@@ -230,6 +230,37 @@
         }
         #event-popup.show { transform: translateX(0) skewX(-10deg); opacity: 1; }
 
+        #follow-cta {
+            left: 50%;
+            transform: translateX(calc(-50% - 800px)) skewX(20deg);
+            opacity: 0;
+        }
+        #follow-cta.run-sequence {
+            animation: drive-by 10s forwards;
+        }
+
+        @keyframes drive-by {
+            0% { 
+                transform: translateX(calc(-50% - 800px)) skewX(20deg); 
+                opacity: 0; 
+                animation-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            }
+            8% { 
+                transform: translateX(-50%) skewX(0deg); 
+                opacity: 1; 
+                animation-timing-function: linear; 
+            }
+            92% { 
+                transform: translateX(-50%) skewX(0deg); 
+                opacity: 1; 
+                animation-timing-function: cubic-bezier(0.6, -0.28, 0.735, 0.045); 
+            }
+            100% { 
+                transform: translateX(calc(-50% + 800px)) skewX(-20deg); 
+                opacity: 0; 
+            }
+        }
+
         .glitch-name { position: relative; display: inline-block; }
         .glitch-name::before, .glitch-name::after {
             content: attr(data-text);
@@ -263,6 +294,14 @@
 
         .clip-corner {
             clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+        }
+
+        @keyframes character-float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .animate-float {
+            animation: character-float 4s ease-in-out infinite;
         }
 
         /* --- RUNNER CHARACTER ANIMATIONS --- */
@@ -381,12 +420,6 @@
                             <img src="https://i.postimg.cc/wjfTtd8J/Official_logo_png.png" alt="Blitz Logo" class="w-80 h-80 object-contain z-10 logo-alive relative mix-blend-screen drop-shadow-[0_0_15px_rgba(204,255,0,0.8)]">
                         </div>
                     </div>
-                    
-                    <div class="w-full max-w-lg bg-mn-yellow/20 clip-corner p-1 border border-mn-yellow/50">
-                        <div class="bg-mn-dark/95 h-10 flex items-center justify-center text-white text-xl font-mono tracking-[0.2em] clip-corner">
-                            SYNC RATE: <span class="text-mn-cyan ml-2 font-bold">100%</span>
-                        </div>
-                    </div>
                 </div>
 
                 <!-- TACTICAL DASHBOARD -->
@@ -443,6 +476,22 @@
                         <span class="text-mn-yellow font-bold">&gt;&gt;</span> 
                         <span id="event-text">USER_NAME</span>
                     </p>
+                </div>
+            </div>
+
+            <!-- FOLLOW CTA POPUP -->
+            <div id="follow-cta" class="absolute top-[320px] z-40 w-[450px] flex flex-col items-center">
+                <!-- Popping out character -->
+                <img src="https://i.postimg.cc/3xRZzcGF/Runner-removebg-preview.png" alt="Notification Character" class="h-44 object-contain -mb-6 relative z-10 drop-shadow-[0_-5px_15px_rgba(255,0,85,0.6)] animate-float">
+                
+                <!-- Main Box -->
+                <div class="bg-mn-dark/95 border-l-8 border-r-8 border-mn-magenta p-5 shadow-[0_0_25px_rgba(255,0,85,0.4)] clip-corner flex flex-col items-center text-center gap-1 w-full backdrop-blur-md relative z-0">
+                    <div class="flex items-center gap-2 mb-1">
+                        <div class="w-3 h-3 bg-mn-magenta animate-pulse"></div>
+                        <span class="font-mono text-mn-magenta text-xs tracking-[0.2em] uppercase">System Broadcast</span>
+                    </div>
+                    <h2 class="font-display text-white text-3xl font-bold uppercase tracking-wide"><span class="text-mn-yellow">&gt;&gt;</span> Follow Me! <span class="text-mn-yellow">&lt;&lt;</span></h2>
+                    <p class="font-mono text-gray-400 text-sm mt-1">Hit that follow button to join the syndicate and get the latest directives.</p>
                 </div>
             </div>
 
@@ -503,6 +552,24 @@
                 }, 5000); 
             }
         });
+
+        // --- FOLLOW CTA LOGIC ---
+        function triggerFollowCTA() {
+            const cta = document.getElementById('follow-cta');
+            if (cta) {
+                // Remove the class to reset the animation state
+                cta.classList.remove('run-sequence');
+                // Trigger a tiny reflow to force the browser to restart the animation
+                void cta.offsetWidth; 
+                // Add the class back to fire the sequence
+                cta.classList.add('run-sequence');
+            }
+        }
+
+        // Trigger every 3 minutes (180000 ms)
+        setInterval(triggerFollowCTA, 180000); 
+        // Trigger once 10 seconds after load so you can see it right away
+        setTimeout(triggerFollowCTA, 10000);
 
         window.addEventListener('load', scaleOverlay);
         window.addEventListener('resize', scaleOverlay);
